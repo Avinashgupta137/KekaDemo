@@ -20,14 +20,21 @@ class NetworkMonitor {
     
     private init() {
         monitor.pathUpdateHandler = { [weak self] path in
+            guard let self = self else { return }
             if path.status == .satisfied {
                 print("Network is connected.")
-                self?.isConnected = true
+                self.isConnected = true
             } else {
                 print("Network is disconnected.")
-                self?.isConnected = false
+                self.isConnected = false
             }
         }
         monitor.start(queue: queue)
+    }
+    
+    func checkNetworkStatus(completion: @escaping (Bool) -> Void) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            completion(self.isConnected)
+        }
     }
 }

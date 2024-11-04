@@ -23,10 +23,11 @@ class ArticleViewModel {
         networkService.fetch(url: url) { [weak self] (result: Result<ArticleResponse, Error>) in
             switch result {
             case .success(let response):
-                // Save articles to CoreData and then fetch them from storage
+                // Save articles to CoreData (only unique ones will be saved)
                 response.response.docs.forEach { article in
                     CoreDataManager.shared.saveArticle(article: article)
                 }
+                // Fetch the updated list from CoreData
                 self?.articles = CoreDataManager.shared.fetchArticles()
                 
                 // Sort and publish the articles

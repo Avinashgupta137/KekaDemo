@@ -25,11 +25,14 @@ class ArticlesViewController: UIViewController {
                 }
             }
             .store(in: &cancellables)
-//        if NetworkMonitor.shared.isConnected {
-            viewModel.fetchArticles()
-//        } else {
-//            viewModel.loadCachedData()
-//        }
+        NetworkMonitor.shared.checkNetworkStatus { isConnected in
+            if isConnected {
+                self.viewModel.fetchArticles()
+            } else {
+                self.viewModel.loadCachedData()
+            }
+        }
+
     }
     private func setupTableView() {
         tableView.dataSource = self
